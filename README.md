@@ -1,2 +1,2 @@
 # ajaxing
-javascript function transform normal html forms to ajax form without refreshing the page.
+javascript function transforms normal html forms to ajax form to not refresh page on submit.
