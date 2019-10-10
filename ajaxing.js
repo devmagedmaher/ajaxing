@@ -26,19 +26,24 @@ console.log('ajaxing.js is loaded successfully. 3.0.0');
 */
 
 function ajaxing({
-	form, 
+	form = null, 
+	link = null, 
 	response, 
 	loadingText = 'loading...', 
 	animation = true, 
 	clearForm = false, 
 	confirmMessage = false,
+	beforeSend = function(){},
 	onSuccess = function(){}
 }) {
 
+if (form) {
 	$(form).on('submit', function(e) {
 	  e.preventDefault();
 
 	  if (confirmMessage) if(!confirm(confirmMessage)) return false;
+      
+    beforeSend();
 
 	  var form = $(this);
 	  var targetUrl = form.attr('action');
@@ -95,4 +100,51 @@ function ajaxing({
 	  });
 
 	});
+}
+
+else if (link) {
+	$(link).on('click', function(e) {
+
+	  e.preventDefault();
+
+	  if (confirmMessage) if(!confirm(confirmMessage)) return false;
+      
+    beforeSend();
+
+    var link = $(this);
+	  var targetUrl = link.attr('href');
+	  console.log(targetUrl);
+	  var linkHolder = link.html();
+
+	  var delayLoading;
+
+	  if (link.attr('disabled')) return false;
+
+	  $.ajax({
+	    url: targetUrl,
+	    type: 'GET',
+	    dataType: 'json',
+	    beforeSend: function() {
+	      link.attr('disabled', 'disabled');
+	      delayLoading = setTimeout(_ => link.html(loadingText), 150);
+	    },
+	    complete: function() {
+	    	clearTimeout(delayLoading);
+	      link.html(linkHolder);
+	    },
+	    success: function(json) {
+	      if (json.success) {
+	      	onSuccess(json, link);
+	      }
+	    },
+	    error: function(err) {
+	      alert('Something went wrong ! ');
+	      link.removeAttr('disabled');
+	    }
+	  });
+		
+	});
+}
+
+
 }
