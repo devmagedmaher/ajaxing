@@ -79,11 +79,11 @@ function ajaxing({
 		    	}
 	    	}
 
-	      form.find('input[type=password]').val('');
+	      form.find('input[type=password], input[type=file]').val('');
 	      
 	      if (json.success) {
 		      if (clearForm) {
-		      	form.find('input[type=text], input[type=email], input[type=file], textarea').val('');
+		      	form.find('input[type=text], input[type=email], textarea').val('');
 		      }
 		      
 	      	onSuccess(json, form);
